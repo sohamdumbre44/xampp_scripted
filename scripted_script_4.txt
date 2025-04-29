@@ -1,0 +1,19 @@
+node {
+stage('Clone Repository') {
+echo 'Cloning the GitHub repository...'
+git credentialsId: 'YOUR_CREDENTIAL_ID', url: 'https://github.com/YOUR_USERNAME/html-deploy-demo.git'
+}
+stage('Build/Prepare') {
+echo 'Build step (can include minifying HTML if needed)...'
+// Optional: Add processing here
+}
+stage('Deploy to XAMPP') {
+echo 'Deploying to XAMPP htdocs folder...'
+def xamppPath = 'C:\\xampp\\htdocs\\html-site'
+bat """
+if not exist "${xamppPath}" mkdir "${xamppPath}"
+xcopy /E /Y *.html "${xamppPath}\\"
+"""
+echo 'Deployment complete. Visit http://localhost/html-site/'
+}
+}
