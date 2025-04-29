@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    environment {
+        DEPLOY_DIR = 'C:\\xampp\\htdocs\\html-declarative'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Cloning the GitHub repository...'
+                git credentialsId: 'YOUR_CREDENTIAL_ID', url: 'https://github.com/YOUR_USERNAME/xampp-declarative.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'No build needed for HTML...'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "Deploying files to ${env.DEPLOY_DIR}"
+                bat """
+                    if not exist "${DEPLOY_DIR}" mkdir "${DEPLOY_DIR}"
+                    xcopy /E /Y *.html "${DEPLOY_DIR}\\"
+                """
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment completed successfully.'
+            echo 'Visit http://localhost/html-declarative/'
+        }
+        failure {
+            echo 'Deployment failed.'
+        }
+    }
+}
